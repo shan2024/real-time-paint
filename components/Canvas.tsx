@@ -36,7 +36,6 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     path: []
   })
 
-
   // On load of canvas, we need to connect to the external canvas and 
   // start recieving information about the canvas, we also need to 
   // send the server data about the current state of our canvas
