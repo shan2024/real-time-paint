@@ -1,5 +1,3 @@
-import { connect } from 'http2';
-
 // Config for connecting to database
 var config = {
   server: `${process.env.AZURE_URL}`,
@@ -42,3 +40,5 @@ export default async function dbConnect() {
     connection.connect();
   })
 }
+
+export const connection = await dbConnect();

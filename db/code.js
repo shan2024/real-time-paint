@@ -1,11 +1,10 @@
-import cryptoRandomString from 'crypto-random-string';
 import { assert } from 'console';
-import dbConnect, {Request, TYPES} from './connection.js';
+import dbConnect, {Request, TYPES, connection} from './connection.js';
 
 
 // Fetches the unique cryptographic hash for the user.
 export async function fetchCode(username) {
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var code = '';
 
   return new Promise((resolve, reject) => {
@@ -21,7 +20,7 @@ export async function fetchCode(username) {
 
     fetchCodeReq.on('requestCompleted', function () {
       console.log("fetchCode: connection closed");
-      connection.close();
+      //connection.close();
     });
 
     // Simply insert the values into the table for now
@@ -39,7 +38,7 @@ export async function fetchCode(username) {
 
 // Returns all user code pairs in the database in a params array.
 export async function fetchUserCodes(username) {
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var username = '';
   var code = '';
   var userCodes = []
@@ -57,7 +56,7 @@ export async function fetchUserCodes(username) {
 
     fetchUserCodeReq.on('requestCompleted', function () {
       console.log("fetchUserCodes: connection closed");
-      connection.close();
+      //connection.close();
     });
 
     // Simply insert the values into the table for now
@@ -79,7 +78,7 @@ export async function fetchUserCodes(username) {
 
 // Returns all user code pairs in the database in a params array.
 export async function fetchAllCodes(username) {
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var codes = []
 
   return new Promise((resolve, reject) => {
@@ -95,7 +94,7 @@ export async function fetchAllCodes(username) {
 
     fetchAllCodesReq.on('requestCompleted', function () {
       console.log("fetchAllCodesReq: connection closed");
-      connection.close();
+      //connection.close();
     });
 
     // Simply insert the values into the table for now

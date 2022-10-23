@@ -1,5 +1,5 @@
 import cryptoRandomString from 'crypto-random-string';
-import dbConnect, {Request, TYPES} from './connection.js';
+import dbConnect, {Request, TYPES, connection} from './connection.js';
 
 // Inserts the specified User into the database. Returns true on successful insert, false
 // otherwise.
@@ -7,7 +7,7 @@ export async function insertUser(username, password, email) {
   // Set the unique code for the user
   const code = cryptoRandomString({length: 10, type: 'url-safe'});
 
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var didInsert = false;
 
   return new Promise((resolve, reject) => {
@@ -36,7 +36,7 @@ export async function insertUser(username, password, email) {
 
     insertUserReq.on('requestCompleted', function () {
       console.log("insertUser: connection closed");
-      connection.close();
+      //connection.close();
     });
 
     // Simply insert the values into the table for now
@@ -52,7 +52,7 @@ export async function insertUser(username, password, email) {
 // Checks whether the user is currently present in the database. Returns true if
 // the database already contains user, false otherwise.
 export async function checkUser(username) {
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var hasUser = false;
 
   return new Promise((resolve, reject) => {
@@ -87,7 +87,7 @@ export async function checkUser(username) {
 
     checkUserReq.on('requestCompleted', function () {
       console.log("checkUser: connection closed");
-      connection.close();
+      //connection.close();
     });
 
     checkUserReq.addParameter('username', TYPES.VarChar, username);
@@ -105,7 +105,7 @@ export async function checkUser(username) {
 //   }
 // ]
 export async function fetchAllUsers() {
-  const connection = await dbConnect();
+  //const connection = await dbConnect();
   var users = [];
 
   return new Promise((resolve, reject) => {
@@ -122,7 +122,7 @@ export async function fetchAllUsers() {
 
     fetchAllUsers.on('requestCompleted', function () {
       console.log("fetchAllUsers: connection closed");
-      connection.close();
+      //connection.close();
     });
   
     connection.execSql(fetchAllUsers);
