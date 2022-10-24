@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import axios from 'axios';
 import { fetchAllUsers } from '../../db/users';
 import {fetchCode} from '../../db/code';
@@ -6,12 +6,19 @@ import Link from 'next/link';
 import { JoinPopup } from '../../components/JoinPopup';
 import { useRouter } from 'next/router';
 import cryptoRandomString from 'crypto-random-string';
+import useProfileStore from '../../state/profile';
 
 
 const UserProfile = ({username, code} : {username:string, code:string}) => {
   const [joinPopup, setJoinPopup] = useState(false); // Controls the popup for joining a room
   const [isValid, setIsValid] = useState(true) // Controls whether the state is valid
+  const {isLoggedIn, setLoggedIn} = useProfileStore();
+  const [userLogged, setUserLogged] = useState(false);
 
+  useEffect(()=> {
+    setUserLogged(isLoggedIn);
+  }, [isLoggedIn, setLoggedIn]);
+  
   const router = useRouter();
 
   // This function handles the room code given by the user
@@ -36,8 +43,16 @@ const UserProfile = ({username, code} : {username:string, code:string}) => {
     router.push(`/canvas/${randCode}`);
   }
 
+  if (!userLogged) {
+    return (
+      <div className='flex h-[80%] m-auto justify-center items-center'>
+        <p className='text-xl'>404 Error: Page not found.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className='flex flex-col w-full h-full justify-center items-center'>
+    <div className='flex flex-col w-full justify-start items-center mt-10 '>
       <div className='flex flex-col gap-4 border-solid border-gray-400 bg-[#d9f0ed] w-[500px] justify-center items-center'>
         <h1 className='text-[50px]'>Welcome <i><b>{username}</b></i></h1>
         <p className='text-center'>Create a new room to make a fresh canvas. Use your join code to add others to your canvas room.</p>

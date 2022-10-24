@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className="h-screen min-w-full bg-[#eff8f2] font-mono">
       <NavBar/>
-      <Component {...pageProps} />
+      <Component {...pageProps} className='bg-[#eff8f2]'/>
     </div>
   );
 }

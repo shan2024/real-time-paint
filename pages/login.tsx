@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {useState } from "react";
+import {useEffect, useState } from "react";
 import SignUpMessage from "../components/SignUpMessage";
 import useProfileStore from "../state/profile";
 
@@ -18,7 +18,7 @@ const iconCss: string = `w-6 h-6`;
 
 const Login: NextPage = () => {
   const router = useRouter();
-  const {isLoggedIn, setLoggedIn} = useProfileStore();
+  const {isLoggedIn, setLoggedIn, setUsername} = useProfileStore();
 
   // Handle submit will take the input username/password from the user, and
   // make sure that they exist in the database. If they exist, the user will 
@@ -33,7 +33,7 @@ const Login: NextPage = () => {
     }
 
     const data = {
-      username: event.target.username.value,
+      username: event.target.username.value.trim(),
       password: event.target.password.value
     }
 
@@ -55,6 +55,7 @@ const Login: NextPage = () => {
     // If user exists, then can safely redirect to the user's profile page
     if (result.userExists) {
       setLoggedIn(true);
+      setUsername(data.username);
       router.push(`/${data.username}/profile`);
     }
   }

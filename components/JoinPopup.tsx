@@ -1,7 +1,7 @@
 import React from 'react'
 const inputCssClass: string = `relative block w-[50%] appearance-none rounded-none rounded-t-md rounded-b-md
- border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 
- focus:outline-none focus:ring-indigo-500 sm:text-sm`;
+ border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-[#239a8f] 
+ focus:outline-none focus:ring-[#239a8f] sm:text-sm`;
 
 export const JoinPopup = ({setPopup, joinRoom}: {setPopup: ()=>void, joinRoom: (e:Event) =>void}) => {
   return (
@@ -14,9 +14,6 @@ export const JoinPopup = ({setPopup, joinRoom}: {setPopup: ()=>void, joinRoom: (
                 <div className="sm:flex sm:items-start md:items-center justify-center">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg font-medium leading-6 text-gray-900 text-center" id="modal-title">Enter Room Code</h3>
-                    {/* <div className="mt-2">
-                      <p className="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -24,8 +21,8 @@ export const JoinPopup = ({setPopup, joinRoom}: {setPopup: ()=>void, joinRoom: (
                   <input id="code" name="code" type="text" required 
                   className={inputCssClass} placeholder="Code"/>
                   <div className="bg-white px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="submit" className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">Enter</button>
-                    <button type="button" onClick ={setPopup} className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                    <button type="submit" className="inline-flex w-full justify-center rounded-md border border-transparent bg-[#49beb7] px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-[#239a8f] focus:outline-none focus:ring-2 focus:ring-[#239a8f] focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">Enter</button>
+                    <button type="button" onClick ={setPopup} className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#239a8f] focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
                   </div>
               </form>
           

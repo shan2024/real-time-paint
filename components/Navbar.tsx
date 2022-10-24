@@ -5,16 +5,25 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useProfileStore from "../state/profile";
 const NavBar: NextPage = () => {
-  const {isLoggedIn, setLoggedIn} = useProfileStore();
+  const {isLoggedIn, username, setLoggedIn, setUsername} = useProfileStore();
   const [userLogged, setUserLogged] = useState(false);
   const router = useRouter();
   function LogOut() {
     setLoggedIn(false);
+    setUsername('');
     setUserLogged(false);
+    router.push(`/`);
   }
 
   function Home() {
     router.push(`/`);
+
+    // if (isLoggedIn) {
+    //   console.log(username);
+    //   router.push(`/${username}/profile`);
+    // } else {
+    //   router.push(`/`);
+    // }
   }
 
   useEffect(()=> {

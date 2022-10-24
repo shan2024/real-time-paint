@@ -5,7 +5,9 @@ import {persist, devtools} from 'zustand/middleware'
 
 interface ProfileState {
   isLoggedIn: boolean,
+  username: string,
   setLoggedIn: (loggedIn: boolean)=>void
+  setUsername: (name: string)=>void
 }
 
 const useProfileStore = create<ProfileState>()(
@@ -13,7 +15,9 @@ const useProfileStore = create<ProfileState>()(
     persist(
       (set) => ({
         isLoggedIn: false,
+        username: '',
         setLoggedIn: (loggedIn: boolean) => set({ isLoggedIn: loggedIn }),
+        setUsername: (name: string) => set({username: name}),
       }),
       {
         name: 'profile-store',

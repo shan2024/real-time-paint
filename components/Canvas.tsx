@@ -24,7 +24,7 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
   const router = useRouter();
 
   const [drawing, setDrawing] = useState(false);
-  const [width, setWidth] = useState(10);
+  const [width, setWidth] = useState(50);
   const [color, setColor] = useState('black');
   const [opacity, setOpacity] = useState(1);
   const [socket, setSocket] = useState<Socket>();
@@ -158,9 +158,9 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
   }
 
   return (
-    <div>
-      <CanvasMenu setColor={setColor} setWidth={setWidth} setOpacity={setOpacity} setClear = {() => sendClearMessage()}/>
-      <canvas onMouseDown={startDraw} onMouseUp={stopDraw} onMouseMove={draw} ref ={canvas} width='1280px' height='720px' className='bg-white'>
+    <div className='flex flex-col items-center justify-center'>
+      <CanvasMenu setColor={setColor} setWidth={setWidth} setOpacity={setOpacity} width ={width} setClear = {() => sendClearMessage()}/>
+      <canvas onMouseDown={startDraw} onMouseUp={stopDraw} onMouseMove={draw} ref ={canvas} width='1000px' height='600px' className='bg-white mb-6 ml-6'>
       </canvas>
     </div>
   )

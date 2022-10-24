@@ -30,8 +30,8 @@ const SignUp: NextPage = () => {
     }
 
     const data = {
-      username: event.target.username.value,
-      email: event.target.email.value,
+      username: event.target.username.value.trim(),
+      email: event.target.email.value.trim(),
       password: event.target.password.value
     }
 
