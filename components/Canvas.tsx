@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 interface CanvasState {
   clientCode: string
   lineWidth: number,
-  strokeStyle: string,
+  strokeStyle: string | CanvasGradient | CanvasPattern,
   globalAlpha: number,
   path: CanvasPos[]
 }
@@ -25,7 +25,7 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
 
   const [drawing, setDrawing] = useState(false);
   const [width, setWidth] = useState(50);
-  const [color, setColor] = useState('black');
+  const [color, setColor] = useState<string | CanvasGradient | CanvasPattern>('black');
   const [opacity, setOpacity] = useState(1);
   const [socket, setSocket] = useState<Socket>();
   const [canvasState, setCanvasState] = useState<CanvasState>({
@@ -47,7 +47,7 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     connection.on('server_canvas_default', initCanvas);
     connection.emit("join_room", router.asPath.substring(8));
     setSocket(connection);
-  }, [])
+  },[])
 
   // Set parameters for the canvas
   useEffect(() => {
@@ -77,6 +77,7 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
   // Stop drawing on the canvas
   function stopDraw(e: any) {
     // Send packet to server
+    console.log(canvasState.strokeStyle);
     socket?.emit("client_canvas_state", canvasState);
     setCanvasState(prevState => ({...prevState, path: [] }));
 
@@ -101,40 +102,42 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     if (arg.clientCode === canvasState.clientCode) {
       return;
     }
+
     // Need to save state of current drawing, then draw the packet, then resume
     // execution of current drawing
-
-    // Save state
-    const oldWidth = width;
-    const oldColor = color;
-    const oldAlpha = opacity;
-    // context.current?.closePath();
-
-    // Set new state
     if (context.current !== undefined && context.current !== null) {
+      // Save state
+      const oldWidth = context.current.lineWidth;
+      const oldColor = context.current.strokeStyle;
+      const oldAlpha = context.current.globalAlpha;
+
+      // Set new state
       context.current.globalAlpha = arg.globalAlpha;
       context.current.strokeStyle = arg.strokeStyle;
-      context.current.lineWidth = arg.lineWidth;    
-    } 
-    context.current?.beginPath();
+      context.current.lineWidth = arg.lineWidth;
 
-    // Draw line
-    if (arg.path.length > 0) {
-      context.current?.moveTo(arg.path[0].xPos, arg.path[0].yPos);
-      arg.path.forEach((value:CanvasPos) => {
-        context.current?.lineTo(value.xPos, value.yPos);
-      })
-      context.current?.stroke();
-    }
-    context.current?.closePath();
+      context.current.beginPath();
 
-    // Restore state
-    if (context.current !== undefined && context.current !== null) {
+      // Draw line
+      if (arg.path.length > 0) {
+        context.current.moveTo(arg.path[0].xPos, arg.path[0].yPos);
+        arg.path.forEach((value: CanvasPos) => {
+          context.current?.lineTo(value.xPos, value.yPos);
+        })
+        context.current.stroke();
+      }
+      context.current.closePath();
+
+      // Restore state
       setWidth(oldWidth);
       setColor(oldColor);
       setOpacity(oldAlpha);
+      context.current.globalAlpha = oldAlpha;
+      context.current.strokeStyle = oldColor;
+      context.current.lineWidth = oldWidth;
     }    
   }
+
 
   
   function initCanvas(arg: CanvasState[]) {
