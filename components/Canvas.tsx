@@ -129,9 +129,6 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
       context.current.closePath();
 
       // Restore state
-      setWidth(oldWidth);
-      setColor(oldColor);
-      setOpacity(oldAlpha);
       context.current.globalAlpha = oldAlpha;
       context.current.strokeStyle = oldColor;
       context.current.lineWidth = oldWidth;
