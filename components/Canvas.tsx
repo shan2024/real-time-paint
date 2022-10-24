@@ -35,6 +35,14 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     globalAlpha: 1,
     path: []
   })
+  // var canvasState : CanvasState = {
+  //   clientCode: cryptoRandomString({length: 10, type: 'url-safe'}),
+  //   lineWidth: 10,
+  //   strokeStyle: 'black',
+  //   globalAlpha: 1,
+  //   path: []
+  // };
+  const [currPos, setCurrPos] = useState<CanvasPos>({xPos: 0, yPos:0});
 
   // On load of canvas, we need to connect to the external canvas and 
   // start recieving information about the canvas, we also need to 
@@ -64,6 +72,10 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
 
   // Start drawing on the canvas
   function startDraw(e: any) {
+    // canvasState.globalAlpha = opacity;
+    // canvasState.lineWidth = width;
+    // canvasState.strokeStyle = color;
+    // canvasState.path.push({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
     setCanvasState(prevState => ({...prevState, globalAlpha: opacity}));
     setCanvasState(prevState => ({...prevState, strokeStyle: color}));
     setCanvasState(prevState => ({...prevState, lineWidth: width}));
@@ -72,32 +84,39 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     context.current?.beginPath();
     context.current?.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     setDrawing(true);
+    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
   }
 
   // Stop drawing on the canvas
   function stopDraw(e: any) {
     // Send packet to server
     console.log(canvasState.strokeStyle);
-    socket?.emit("client_canvas_state", canvasState);
+    //canvasState.path = [];
     setCanvasState(prevState => ({...prevState, path: [] }));
-
+    socket?.emit("client_canvas_state", canvasState);
     context.current?.closePath();
+
     setDrawing(false);
+    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+
   }
 
   function draw(e:any) {
     if (!drawing) {
       return;
     }
+    //canvasState.path.push({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+
     setCanvasState(prevState => ({...prevState, path: [...prevState.path, {xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY}] }));
     context.current?.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
     context.current?.stroke();
-
+    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
   }
 
 
   // Draw the packet given by the server
   function drawPacket(arg: CanvasState) {
+    console.log("recieved message")
     // Check that we do not recieve our own message
     if (arg.clientCode === canvasState.clientCode) {
       return;
@@ -116,8 +135,8 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
       context.current.strokeStyle = arg.strokeStyle;
       context.current.lineWidth = arg.lineWidth;
 
+      context.current.closePath();
       context.current.beginPath();
-
       // Draw line
       if (arg.path.length > 0) {
         context.current.moveTo(arg.path[0].xPos, arg.path[0].yPos);
@@ -127,6 +146,8 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
         context.current.stroke();
       }
       context.current.closePath();
+      context.current.beginPath();
+      context.current.moveTo(currPos.xPos, currPos.yPos);
 
       // Restore state
       context.current.globalAlpha = oldAlpha;
