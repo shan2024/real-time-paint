@@ -17,6 +17,8 @@ interface CanvasPos {
   yPos: number
 }
 
+var currPos : CanvasPos = {xPos:0, yPos:0};
+
 // This component defines a guest canvas for guest users
 const Canvas = ({roomCode}:{roomCode:string}) => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
@@ -35,14 +37,9 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     globalAlpha: 1,
     path: []
   })
-  // var canvasState : CanvasState = {
-  //   clientCode: cryptoRandomString({length: 10, type: 'url-safe'}),
-  //   lineWidth: 10,
-  //   strokeStyle: 'black',
-  //   globalAlpha: 1,
-  //   path: []
-  // };
-  const [currPos, setCurrPos] = useState<CanvasPos>({xPos: 0, yPos:0});
+
+  //const [currPos, setCurrPos] = useState<CanvasPos>({xPos: 0, yPos:0});
+  //const [currY, setCurrY] = useState(0);
 
   // On load of canvas, we need to connect to the external canvas and 
   // start recieving information about the canvas, we also need to 
@@ -84,20 +81,22 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     context.current?.beginPath();
     context.current?.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     setDrawing(true);
-    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //currPos = {xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY}
+
   }
 
   // Stop drawing on the canvas
   function stopDraw(e: any) {
     // Send packet to server
-    console.log(canvasState.strokeStyle);
     //canvasState.path = [];
     setCanvasState(prevState => ({...prevState, path: [] }));
     socket?.emit("client_canvas_state", canvasState);
     context.current?.closePath();
 
     setDrawing(false);
-    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //currPos = {xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY}
 
   }
 
@@ -110,13 +109,15 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
     setCanvasState(prevState => ({...prevState, path: [...prevState.path, {xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY}] }));
     context.current?.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
     context.current?.stroke();
-    setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //currPos = {xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY}
+    //setCurrPos({xPos: e.nativeEvent.offsetX, yPos: e.nativeEvent.offsetY});
+    //console.log(currPos)
+    //setCurrY(e.nativeEvent.offsetY);
   }
 
 
   // Draw the packet given by the server
   function drawPacket(arg: CanvasState) {
-    console.log("recieved message")
     // Check that we do not recieve our own message
     if (arg.clientCode === canvasState.clientCode) {
       return;
@@ -147,7 +148,6 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
       }
       context.current.closePath();
       context.current.beginPath();
-      context.current.moveTo(currPos.xPos, currPos.yPos);
 
       // Restore state
       context.current.globalAlpha = oldAlpha;
@@ -166,15 +166,12 @@ const Canvas = ({roomCode}:{roomCode:string}) => {
 
   // Clears the entire canvas
   function clearCanvas() {
-    console.log("clearning canvas")
     if (context.current !== null && canvas.current !== null) {
       context.current.clearRect(0, 0, canvas.current.width, canvas.current.height)
     }
   }
 
   function sendClearMessage() {
-    console.log("sent clearning canvas")
-
     socket?.emit("client_clear");
   }
 
