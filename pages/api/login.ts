@@ -9,6 +9,7 @@ type Data = {
   userExists: boolean
 }
 
+
 // Handler recieves json with username and password, send back true if the user does exist in database
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data | ErrorResponse>) {
   if (req.method === "PUT") {
